@@ -6,5 +6,6 @@ data class MyMusic(
     val title: String,
     val artist: String,
     val duration: Long,
-    val albumArtUri: Long
+    val albumArtUri: Long,
+    val uri : String
 )

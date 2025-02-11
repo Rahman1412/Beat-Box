@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,34 +22,38 @@ import com.example.musicapp.R
 
 @Composable
 fun RequestAccess(requestPermission : () -> Unit){
-    Box(
-        modifier = Modifier.fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
-        contentAlignment = Alignment.Center
-    ){
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.music_icon),
-                contentDescription = "Music Icon",
-                modifier = Modifier.padding(20.dp).size(50.dp)
-            )
-            Text(
-                text = "You must grant permission to access your device's media files in order to continue",
-                textAlign = TextAlign.Center
-            )
-            Button(
-                onClick = {
-                    requestPermission()
-                },
-                modifier = Modifier.padding(top = 20.dp)
+
+    Scaffold { padding ->
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .padding(padding)
+                .background(MaterialTheme.colorScheme.surface),
+            contentAlignment = Alignment.Center
+        ){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Allow Access")
+                Icon(
+                    painter = painterResource(id = R.drawable.music_icon),
+                    contentDescription = "Music Icon",
+                    modifier = Modifier.padding(20.dp).size(50.dp)
+                )
+                Text(
+                    text = "You must grant permission to access your device's media files in order to continue",
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = {
+                        requestPermission()
+                    },
+                    modifier = Modifier.padding(top = 20.dp)
+                ) {
+                    Text(text = "Allow Access")
+                }
             }
         }
     }

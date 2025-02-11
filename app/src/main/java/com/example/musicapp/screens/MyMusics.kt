@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -43,15 +44,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
@@ -66,7 +70,7 @@ import kotlinx.coroutines.withContext
 @SuppressLint("Recycle")
 @Composable
 fun MyMusics(){
-    val vm : MyMusicVm = viewModel()
+    val vm : MyMusicVm = hiltViewModel()
     val myMusic = vm.myMusic.collectAsState().value
 
     val currentMusic = vm.currentMusic.value
@@ -101,92 +105,97 @@ fun MyMusics(){
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
-    ){
-        Column(
-            modifier = Modifier.verticalScroll(rememberScrollState())
+    Scaffold { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(MaterialTheme.colorScheme.surface)
         ){
-            myMusic.forEachIndexed  { index,item->
-                Musics(index,item,vm,reset)
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ){
+                myMusic.forEachIndexed  { index,item->
+                    Musics(index,item,vm,reset)
+                }
             }
-        }
 
-        if(currentMusic != null){
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Transparent)
-                    .align(Alignment.BottomEnd)
-                    .clickable {
-                        isBottomSheet = true
-                    },
-                elevation =  CardDefaults.cardElevation(8.dp),
-                shape = RoundedCornerShape(0.dp),
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ){
-                    Row(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalArrangement = Arrangement.Absolute.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+            if(currentMusic != null){
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent)
+                        .align(Alignment.BottomEnd)
+                        .clickable {
+                            isBottomSheet = true
+                        },
+                    elevation =  CardDefaults.cardElevation(8.dp),
+                    shape = RoundedCornerShape(0.dp),
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ){
                         Row(
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.padding(20.dp),
+                            horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Image(
-                                bitmap = vm.getAlbumArt(currentMusic.albumArtUri)?.asImageBitmap()
-                                    ?: ImageBitmap.imageResource(id = R.drawable.music_icon),
-                                contentDescription = "Music Art",
-                                modifier = Modifier.size(65.dp)
-                            )
-                            Column(
-                                modifier = Modifier.padding(start = 5.dp)
+                            Row(
+                                modifier = Modifier.weight(1f)
                             ) {
-                                MusicTitle(currentMusic.title)
-                                Text(
-                                    text = currentMusic.artist,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                Image(
+                                    bitmap = vm.getAlbumArt(currentMusic.albumArtUri)?.asImageBitmap()
+                                        ?: ImageBitmap.imageResource(id = R.drawable.music_icon),
+                                    contentDescription = "Music Art",
+                                    modifier = Modifier.size(65.dp)
+                                )
+                                Column(
+                                    modifier = Modifier.padding(start = 5.dp)
+                                ) {
+                                    MusicTitle(currentMusic.title)
+                                    Text(
+                                        text = currentMusic.artist,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            }
+
+                            IconButton(
+                                onClick = {
+                                    vm.toggleMediaPlayer()
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = if (isPlaying) R.drawable.pause else R.drawable.play),
+                                    contentDescription = "Action",
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .padding(5.dp)
                                 )
                             }
                         }
-
-                        IconButton(
-                            onClick = {
-                                vm.toggleMediaPlayer()
-                            }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = if (isPlaying) R.drawable.pause else R.drawable.play),
-                                contentDescription = "Action",
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .padding(5.dp)
-                            )
-                        }
+                        MusicPlayerProgressBar(currentTime,totalDuration)
                     }
-                    MusicPlayerProgressBar(currentTime,totalDuration)
-                }
 
+                }
             }
         }
-    }
 
-    if(isBottomSheet && currentMusic != null && currentIndex != null){
-        ModalBottomSheet(
-            onDismissRequest = {
-                scope.launch {
-                    isBottomSheet = false
-                    sheetState.hide()
-                }
-            },
-            sheetState = sheetState,
-            modifier = Modifier.fillMaxHeight(),
-        ) {
-            CurrentMusic(currentMusic,myMusic,vm,isPlaying,currentTime,totalDuration,reset,currentIndex)
+        if(isBottomSheet && currentMusic != null && currentIndex != null){
+            ModalBottomSheet(
+                onDismissRequest = {
+                    scope.launch {
+                        isBottomSheet = false
+                        sheetState.hide()
+                    }
+                },
+                sheetState = sheetState,
+                modifier = Modifier.fillMaxHeight(),
+                dragHandle = null,
+                shape = RectangleShape
+            ) {
+                CurrentMusic(currentMusic,myMusic,vm,isPlaying,currentTime,totalDuration,reset,currentIndex)
+            }
         }
     }
 }
