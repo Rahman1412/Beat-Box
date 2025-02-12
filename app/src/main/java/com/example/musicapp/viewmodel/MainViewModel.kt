@@ -23,10 +23,12 @@ class MainViewModel @Inject constructor(
             Lifecycle.Event.ON_RESUME -> Log.d("Resume","Activity Resume")
             Lifecycle.Event.ON_PAUSE -> Log.d("Pause","Activity Pause")
             Lifecycle.Event.ON_STOP -> {
+
+            }
+            Lifecycle.Event.ON_DESTROY -> {
                 val intent = Intent(context, MusicService::class.java)
                 context.stopService(intent)
             }
-            Lifecycle.Event.ON_DESTROY -> Log.d("Destroyed","Activity Destroyed")
             Lifecycle.Event.ON_ANY -> Log.d("ANY","Activity ANY")
         }
     }
