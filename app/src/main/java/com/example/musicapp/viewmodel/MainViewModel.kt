@@ -7,14 +7,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import com.example.musicapp.repository.MusicRepository
 import com.example.musicapp.services.MusicService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val musicRepo : MusicRepository
 ): ViewModel(), LifecycleEventObserver{
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when(event){
@@ -26,8 +32,9 @@ class MainViewModel @Inject constructor(
 
             }
             Lifecycle.Event.ON_DESTROY -> {
-                val intent = Intent(context, MusicService::class.java)
-                context.stopService(intent)
+                CoroutineScope(Dispatchers.Main).launch {
+                    musicRepo.dismissService()
+                }
             }
             Lifecycle.Event.ON_ANY -> Log.d("ANY","Activity ANY")
         }

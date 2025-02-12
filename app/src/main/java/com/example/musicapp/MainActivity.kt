@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     private val vm : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         lifecycle.addObserver(vm)

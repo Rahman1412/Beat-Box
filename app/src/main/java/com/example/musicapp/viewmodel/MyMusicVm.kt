@@ -97,5 +97,4 @@ class MyMusicVm @Inject constructor(
         val seconds = totalSeconds % 60
         return String.format("%02d:%02d", minutes, seconds)
     }
-
 }
