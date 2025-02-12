@@ -71,10 +71,10 @@ import kotlinx.coroutines.withContext
 @Composable
 fun MyMusics(){
     val vm : MyMusicVm = hiltViewModel()
-    val myMusic = vm.myMusic.collectAsState().value
+    val myMusic by vm.myMusic.collectAsState()
 
-    val currentMusic = vm.currentMusic.value
-    val isPlaying = vm.isPlaying.value
+    val currentMusic by vm.currentMusic.collectAsState()
+    val isPlaying by vm.isPlaying.collectAsState()
     
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -82,12 +82,12 @@ fun MyMusics(){
         mutableStateOf(false)
     }
 
-    val totalDuration = vm.totalDuration.longValue
-    var currentTime by rememberSaveable { mutableLongStateOf(0L) }
-    val currentIndex = vm.currentIndex.value
+    val totalDuration by vm.totalDuration.collectAsState()
+    val currentTime by vm.currentTime.collectAsState()
+    val currentIndex by vm.currentIndex.collectAsState()
 
     val reset : () -> Unit = {
-        currentTime = 0L
+        vm.updateTime(0L,"reset")
     }
 
     LaunchedEffect(isPlaying) {
@@ -95,7 +95,7 @@ fun MyMusics(){
             if (isPlaying) {
                 while (currentTime < totalDuration) {
                     delay(1000L)
-                    currentTime += 1000L
+                    vm.updateTime(1000L,"increment")
                     if(currentTime >= totalDuration){
                         vm.playNextTrack()
                         reset()
@@ -144,7 +144,7 @@ fun MyMusics(){
                                 modifier = Modifier.weight(1f)
                             ) {
                                 Image(
-                                    bitmap = vm.getAlbumArt(currentMusic.albumArtUri)?.asImageBitmap()
+                                    bitmap = vm.getAlbumArt(currentMusic!!.albumArtUri)?.asImageBitmap()
                                         ?: ImageBitmap.imageResource(id = R.drawable.music_icon),
                                     contentDescription = "Music Art",
                                     modifier = Modifier.size(65.dp)
@@ -152,9 +152,9 @@ fun MyMusics(){
                                 Column(
                                     modifier = Modifier.padding(start = 5.dp)
                                 ) {
-                                    MusicTitle(currentMusic.title)
+                                    MusicTitle(currentMusic!!.title)
                                     Text(
-                                        text = currentMusic.artist,
+                                        text = currentMusic!!.artist,
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
@@ -194,7 +194,9 @@ fun MyMusics(){
                 dragHandle = null,
                 shape = RectangleShape
             ) {
-                CurrentMusic(currentMusic,myMusic,vm,isPlaying,currentTime,totalDuration,reset,currentIndex)
+                CurrentMusic(currentMusic!!,myMusic,vm,isPlaying,currentTime,totalDuration,reset,
+                    currentIndex!!
+                )
             }
         }
     }
