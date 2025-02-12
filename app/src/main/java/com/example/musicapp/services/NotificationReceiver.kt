@@ -23,7 +23,6 @@ class NotificationReceiver:BroadcastReceiver() {
             MusicServiceEntryPoint::class.java
         )
         val musicRepository = entryPoint.getMusicRepository()
-
         when (intent?.action) {
             "PLAY_PAUSE" -> {
                 coroutineScope.launch {
@@ -31,9 +30,7 @@ class NotificationReceiver:BroadcastReceiver() {
                 }
             }
             "NOTIFICATION_DISMISS" -> {
-                coroutineScope.launch {
-                    musicRepository.dismissService()
-                }
+                musicRepository.dismissService()
             }
         }
     }

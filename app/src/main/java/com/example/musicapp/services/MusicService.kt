@@ -22,6 +22,7 @@ import androidx.core.app.NotificationCompat
 import com.example.musicapp.R
 import com.example.musicapp.di.MusicServiceEntryPoint
 import com.example.musicapp.models.MyMusic
+import com.example.musicapp.repository.MusicRepository
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,9 @@ class MusicService : Service() {
     private lateinit var mediaPlayer : MediaPlayer
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    @Inject
+    lateinit var musicRepo: MusicRepository
 
     override fun onCreate() {
         super.onCreate()
@@ -158,10 +162,16 @@ class MusicService : Service() {
     }
 
     override fun onDestroy() {
-        if(::mediaPlayer.isInitialized){
+        if(::mediaPlayer.isInitialized || mediaPlayer.isPlaying){
             mediaPlayer.release()
         }
         super.onDestroy()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        stopSelf()
+        musicRepo.dismissService()
     }
 
     companion object {

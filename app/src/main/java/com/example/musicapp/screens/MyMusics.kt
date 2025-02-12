@@ -67,7 +67,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("Recycle")
 @Composable
 fun MyMusics(){
     val vm : MyMusicVm = hiltViewModel()

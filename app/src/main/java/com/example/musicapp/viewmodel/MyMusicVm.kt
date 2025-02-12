@@ -36,7 +36,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MyMusicVm @Inject constructor(
     @ApplicationContext private val context : Context,
-    private val mediaPlayer: MediaPlayer,
     private val musicRepo: MusicRepository
 ):ViewModel() {
 

@@ -20,19 +20,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.musicapp.screens.MyApp
 import com.example.musicapp.services.MusicService
 import com.example.musicapp.ui.theme.MusicAppTheme
-import com.example.musicapp.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val vm : MainViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        lifecycle.addObserver(vm)
         setContent {
             MusicAppTheme {
                 MyApp()

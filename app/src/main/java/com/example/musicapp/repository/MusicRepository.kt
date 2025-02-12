@@ -40,8 +40,8 @@ class MusicRepository @Inject constructor(
     private val _currentIndex = MutableStateFlow<Int?>(null)
     val currentIndex : StateFlow<Int?> = _currentIndex
 
-    private val _isPlaying = MutableStateFlow(false)
-    val isPlaying = _isPlaying
+    private val _isPlaying = MutableStateFlow<Boolean>(false)
+    val isPlaying : StateFlow<Boolean> = _isPlaying
 
     private val _totalDuration = MutableStateFlow<Long>(0L)
     val totalDuration : StateFlow<Long> = _totalDuration
@@ -165,7 +165,7 @@ class MusicRepository @Inject constructor(
         }
     }
 
-    suspend fun dismissService(){
+    fun dismissService(){
         _isPlaying.value = false
         val intent = Intent(context, MusicService::class.java)
         context.stopService(intent)
