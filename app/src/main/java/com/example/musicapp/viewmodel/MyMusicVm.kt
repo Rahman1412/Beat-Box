@@ -39,6 +39,10 @@ class MyMusicVm @Inject constructor(
     private val musicRepo: MusicRepository
 ):ViewModel() {
 
+    init {
+        Log.d("Music Repository is Initialized","Music Repo Initialized")
+    }
+
     val myMusic = musicRepo.myMusic
     val currentMusic = musicRepo.currentMusic
     val currentIndex = musicRepo.currentIndex

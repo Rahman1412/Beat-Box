@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:name=".HiltApp"
         android:allowBackup="true"
@@ -22,8 +24,8 @@
         <service
             android:name=".services.MusicService"
             android:foregroundServiceType="mediaPlayback"
-            android:exported="false" />
-        <receiver android:name=".services.NotificationReceiver"/>
+            android:stopWithTask="true"/>
+        <receiver android:name=".services.NotificationReceiver" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

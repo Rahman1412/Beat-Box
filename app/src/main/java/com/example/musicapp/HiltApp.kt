@@ -1,12 +1,13 @@
 package com.example.musicapp
 
 import android.app.Application
-import androidx.lifecycle.ProcessLifecycleOwner
-import com.example.musicapp.repository.MusicRepository
-import com.example.musicapp.utils.AppLifecycleObserver
+import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
 
 @HiltAndroidApp
 class HiltApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        Log.d("Hilt OnCreate","Hilt Is Initializing")
+    }
 }

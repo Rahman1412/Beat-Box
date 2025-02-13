@@ -28,8 +28,7 @@ import javax.inject.Singleton
 
 @Singleton
 class MusicRepository @Inject constructor(
-    @ApplicationContext private val context: Context,
-    private val mediaPlayer: MediaPlayer
+    @ApplicationContext private val context: Context
 ) {
     private val _myMusic = MutableStateFlow<List<MyMusic>>(emptyList())
     val myMusic: StateFlow<List<MyMusic>> = _myMusic
@@ -115,13 +114,19 @@ class MusicRepository @Inject constructor(
     }
 
     suspend fun toggleMediaPlayer(){
+        Log.d("Toggle Media Player","Toggle Media Player")
         try{
+            Log.d("Is Playing","${_isPlaying.value}")
             if(_isPlaying.value){
-                _isPlaying.value = false
-                _currentMusic.value?.let { stopMusicService(it) }
+                _isPlaying.emit(false)
+                _currentMusic.value?.let {
+                    stopMusicService(it)
+                }
             }else{
                 _isPlaying.value = true
-                _currentMusic.value?.let { startMusicService(it,currentTime.value) }
+                _currentMusic.value?.let {
+                    startMusicService(it,currentTime.value)
+                }
             }
         }catch (e:Exception){
             Log.d("New Exception","${e}")
@@ -154,6 +159,7 @@ class MusicRepository @Inject constructor(
     }
 
     private fun stopMusicService(music: MyMusic) {
+        Log.d("Stop Music Player","Stop Music Player")
         val intent = Intent(context, MusicService::class.java).apply {
             putExtra("MUSIC", music)
             putExtra("SONG_ACTION", "pause")
@@ -172,9 +178,11 @@ class MusicRepository @Inject constructor(
     }
 
     fun startMusicService(music: MyMusic,seek:Long) {
+        Log.d("Start Music Player","Start Music Player")
         val intent = Intent(context, MusicService::class.java).apply {
             putExtra("MUSIC", music)
             putExtra("SEEK",seek)
+            putExtra("SONG_ACTION", "play")
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             context.startForegroundService(intent)
