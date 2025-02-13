@@ -60,6 +60,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.musicapp.R
+import com.example.musicapp.viewmodel.HomeVm
 import com.example.musicapp.viewmodel.MyMusicVm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -70,6 +71,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun MyMusics(){
     val vm : MyMusicVm = hiltViewModel()
+    val homeVm : HomeVm = hiltViewModel()
     val myMusic by vm.myMusic.collectAsState()
 
     val currentMusic by vm.currentMusic.collectAsState()

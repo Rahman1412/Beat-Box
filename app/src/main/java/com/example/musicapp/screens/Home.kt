@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("PermissionLaunchedDuringComposition")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -29,9 +31,15 @@ fun Home(){
     val context = LocalContext.current
     val permissionState = rememberMultiplePermissionsState(
         permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            listOf(android.Manifest.permission.READ_MEDIA_AUDIO)
+            listOf(
+                android.Manifest.permission.READ_MEDIA_AUDIO,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
         } else {
-            listOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            listOf(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
         }
     )
     val coroutineScope = rememberCoroutineScope()
