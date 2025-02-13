@@ -22,6 +22,7 @@ import com.example.musicapp.screens.MyApp
 import com.example.musicapp.services.MusicService
 import com.example.musicapp.ui.theme.MusicAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.system.exitProcess
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        System.exit(0)
+        exitProcess(0)
     }
 
 }

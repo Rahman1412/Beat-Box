@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
+import kotlin.system.exitProcess
 
 class MusicService : Service() {
 
@@ -164,7 +165,6 @@ class MusicService : Service() {
     }
 
     override fun onDestroy() {
-        Log.d("MusicService", "Service destroyed")
         try {
             if (::mediaPlayer.isInitialized) {
                 if (mediaPlayer.isPlaying) {
@@ -184,7 +184,7 @@ class MusicService : Service() {
         try {
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
-            System.exit(0)
+            exitProcess(0)
         } catch (e: Exception) {
             Log.e("MusicService", "Error stopping service: ${e.message}")
         }
